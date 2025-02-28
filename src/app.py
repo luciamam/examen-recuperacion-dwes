@@ -38,6 +38,11 @@ def pagina_404(error):
     return "<h1> Este recurso no se encuentra 😎</h1>"
 
 
+@app.route('/perfil')
+def perfil():
+    return "bienvenido usuario "
+
+
 
 
 if __name__=='__main__':

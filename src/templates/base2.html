@@ -3,10 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>tienda online</title>
+    <title>{% block  title %}{% endblock %}</title>
     <link rel="stylesheet" href="{{url_for('static',filename='styles.css')}}">
+
+    {{ bootstrap.load_css() }}
 </head>
 <body>
+    {% block body  %}
     <div id="container-padre">
         <header>
             <span>Home</span>
@@ -19,8 +22,10 @@
 
         </header>
         <section>
+            {% block section %}
             <h1>wellcome  to the page </h1>
             <a href="{{ url_for('login')}}">Empezamos</a>
+            {% enblock %}
     
         </section>
         <footer>
@@ -28,5 +33,18 @@
         </footer>
         
     </div>
+    
+
+
+    {% endblock %}
+
+
+
+
+
+
+
+    {{ bootstrap.load_js() }}
+    
 </body>
 </html>
