@@ -17,7 +17,7 @@ Bootstrap4(app)
 
 @app.route('/')
 def home():
-    return "home"
+    return render_template('Home.html')
 
 
 @app.route('/register')

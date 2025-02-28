@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>tienda online</title>
+</head>
+<body>
+    <div id="container-padre">
+        <header>
+            <span>Home</span>
+            <nav>
+                <ul>
+                    <a href="{{url_for('login')}}">Login</a>
+                    <a href="{{url_for('register')}}">Login</a>
+                </ul>
+            </nav>
+
+        </header>
+        <section>
+            <h1>wellcome  to the page </h1>
+            <a href="{{ url_for('login')}}">Empezamos</a>
+    
+        </section>
+        <footer>
+            <span>&copy; tienda online-2025</span>
+        </footer>
+        
+    </div>
+</body>
+</html>
