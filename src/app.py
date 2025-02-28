@@ -1,4 +1,4 @@
-from flask import Flask,render_template, redirect, request,url_for,make_response
+from flask import Flask,render_template, redirect, request,url_for,make_response,flash
 from flask_bootstrap import Bootstrap4 
 from dotenv import load_dotenv
 from formularios.forms import RegisterUser,LoginUser
@@ -60,9 +60,18 @@ def register():
     return render_template('RegistrarUsuario.html',form=form)
 
 
-@app.route('/login')
+@app.route('/login',methods=['GET','POST'])
 def login():
+
+    datos=request.form
+    password_form=datos['password']
     form=LoginUser()
+    if request.method=='POST':
+        password=users_collection.find_one({'password':datos['passeord']})
+        if  password!=password_form:
+            flash("usuario no existe","dangers")
+            return redirect(url_for('register'))
+        #aqui tambien iba crear el token pero no me da tiempo ahora 
     return render_template('LoginUsuario.html',form=form)
 
 
