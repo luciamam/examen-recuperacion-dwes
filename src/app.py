@@ -1,10 +1,14 @@
-from flask import Flask,render_template, redirect, request,url_for,flash
+from flask import Flask,render_template, redirect, request,url_for,make_response
 from flask_bootstrap import Bootstrap4 
 from dotenv import load_dotenv
 from formularios.forms import RegisterUser,LoginUser
 from pymongo import MongoClient
+#para proteger la ruta vamos a usar el jwt y vamos a guardar el token en la cookie
+from flask_jwt_extended import JWTManager ,jwt_required, create_access_token, get_jwt_identity
 import os
 load_dotenv
+import json
+
 
 
 
@@ -15,12 +19,9 @@ db = client['MibasedeDatosUsuarios']
 #creamos la collecction 
 users_collection=db['usuarios']
 
-
-
-
-
 app=Flask(__name__)
 app.config['SECRET_KEY']=os.getenv('SECRET_KEY')
+jwt=JWTManager(app)
 Bootstrap4(app)
 
 
@@ -46,8 +47,14 @@ def register():
                 'password':datos['password'],
                 'fullname':datos['fullname']
             }
+
+            #como voy a guardar el token en la cookie necesito el make-reponse para cambios en la respuesta(response) de mi servidor 
+            response=make_response(redirect(url_for('perfil')))
+
+            create_token=create_access_token(identity=str({'fullname':datos['fullname']}))
+            response.set_cookie('access_token_cookie',create_token)
             users_collection.insert_one(usuario)
-            return redirect(url_for('perfil'))
+            return response
             
 
     return render_template('RegistrarUsuario.html',form=form)
@@ -65,10 +72,22 @@ def pagina_404(error):
     return "<h1> Este recurso no se encuentra 😎</h1>"
 
 
+
+#manejo de error del 401 , le redirecciono al usario al login  para que no  le salga  la respuesta por defecto 
+@jwt.unauthorized_loader
+def manejar_error_401(mensaje):
+    return redirect(url_for('login'))
+
+
 #la ruta perfil tiene que esta protegida en esste caso lo vamos a proteger con el token jwt 
 @app.route('/perfil')
+@jwt_required(locations=['cookies'])
 def perfil():
-    return "bienvenido usuario "
+    current_user=get_jwt_identity()
+    current_user=current_user.replace("'",'"')
+    current_user=json.loads(current_user)
+    fullname=current_user['fullname']
+    return "bienvenido {}".format(fullname)
 
 
 
